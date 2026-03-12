@@ -15,29 +15,17 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin administration pages are defined here.
+ * Plugin strings are defined here.
  *
  * @package     local_academic_summary
- * @category    admin
+ * @category    string
  * @copyright   2026 Renzo Medina <medinast30@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-if ($hassiteconfig) {
-    $settings = new admin_settingpage('local_academic_summary_settings', get_string('pluginname', 'local_academic_summary'));
-
-    // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedIf
-    if ($ADMIN->fulltree) {
-        // TO-DO: Define actual plugin settings page and add it to the tree - {@link https://docs.moodle.org/dev/Admin_settings}.
-    }
-    
-    $ADMIN->add('users', new admin_category('local_academic_summary_users', get_string('pluginname', 'local_academic_summary')));
-    $ADMIN->add('local_academic_summary_users', new admin_externalpage(
-        'local_academic_summary',
-        get_string('pluginname:link', 'local_academic_summary'),
-        new moodle_url('/local/academic_summary/index.php'),
-        'moodle/site:config'
-    ));
-}
+$string['pluginname'] = 'Resumen Académico';
+$string['local_academic_summary_settings'] = 'Configuración del Resumen Académico';
+$string['pluginname:link'] = 'Progreso Académico';
+$string['academic_summary:view'] = 'Ver resumen académico';
