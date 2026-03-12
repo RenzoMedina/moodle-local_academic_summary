@@ -25,7 +25,31 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Resumen Académico';
-$string['local_academic_summary_settings'] = 'Configuración del Resumen Académico';
-$string['pluginname:link'] = 'Progreso Académico';
 $string['academic_summary:view'] = 'Ver resumen académico';
+$string['actions'] = 'Acciones';
+$string['averageprogress'] = 'Progreso Promedio';
+$string['coursename'] = 'Nombre del Curso';
+$string['completed'] = 'Completado';
+$string['email'] = 'Correo Electrónico';
+$string['enddate'] = 'Fecha de Fin';
+$string['fullname'] = 'Nombre Completo';
+$string['inprogress'] = 'En Progreso';
+$string['lastaccess'] = 'Último Acceso';
+$string['local_academic_summary_settings'] = 'Configuración del Resumen Académico';
+$string['noprogress'] = 'No hay información de progreso disponible.';
+$string['nosearchresults'] = 'No se encontraron resultados de búsqueda.';
+$string['noupcomingevents'] = 'No hay eventos próximos.';
+$string['pluginname'] = 'Resumen Académico';
+$string['pluginname:link'] = 'Progreso Académico';
+$string['progress'] = 'Progreso';
+$string['return'] = 'Regresar';
+$string['search'] = 'Buscar';
+$string['summarydescription'] = 'Este informe proporciona una visión general del desempeño académico del estudiante, incluyendo finalizaciones de cursos, calificaciones y progreso hacia la graduación.';
+$string['summarytitle'] = 'Informe de Resumen Académico';
+$string['startdate'] = 'Fecha de Inicio';
+$string['status'] = 'Estado';
+$string['totalcourses'] = 'Total de Cursos';
+$string['username'] = 'Nombre de Usuario';
+$string['viewdetail'] = 'Ver Detalle';
+$string['upcomingevents'] = 'Próximos eventos';
+$string['withoutstarting'] = 'Sin Iniciar';

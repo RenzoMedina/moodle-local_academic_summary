@@ -1,4 +1,6 @@
 <?php
+
+use local_academic_summary\form\formsummary;
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -33,6 +35,20 @@ $PAGE->set_url(new moodle_url('/local/academic_summary/index.php'));
 $PAGE->set_title(get_string('pluginname', 'local_academic_summary'));
 $PAGE->set_heading(get_string('pluginname', 'local_academic_summary'));
 
+use local_academic_summary\form\summary;
+
+$mform = new summary();
+
+if ($mform->is_cancelled()) {
+    redirect(new moodle_url('/admin/search.php#linkusers'));
+} else if ($data = $mform->get_data()) {
+    // Process form data if needed.
+}
+
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('pluginname', 'local_academic_summary'));
+$templatedata =[
+    'returnurl' => (new moodle_url('/admin/search.php#linkusers'))->out(),
+    'formsummary' => $mform->render(),
+];
+echo $OUTPUT->render_from_template('local_academic_summary/main', $templatedata);
 echo $OUTPUT->footer();

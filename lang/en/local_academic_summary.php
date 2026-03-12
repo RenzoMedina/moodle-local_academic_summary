@@ -25,7 +25,31 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Academic Summary';
-$string['local_academic_summary_settings'] = 'Academic Summary Settings';
-$string['pluginname:link'] = 'Academic Progress';
 $string['academic_summary:view'] = 'View academic summary';
+$string['actions'] = 'Actions';
+$string['averageprogress'] = 'Average Progress';
+$string['completed'] = 'Completed';
+$string['coursename'] = 'Course Name';
+$string['email'] = 'Email';
+$string['enddate'] = 'End Date';
+$string['fullname'] = 'Full Name';
+$string['inprogress'] = 'In Progress';
+$string['lastaccess'] = 'Last Access';
+$string['local_academic_summary_settings'] = 'Academic Summary Settings';
+$string['noprogress'] = 'No progress information available.';
+$string['nosearchresults'] = 'No search results found.';
+$string['noupcomingevents'] = 'No upcoming events.';
+$string['pluginname'] = 'Academic Summary';
+$string['pluginname:link'] = 'Academic Progress';
+$string['progress'] = 'Progress';
+$string['return'] = 'Return';
+$string['search'] = 'Search';
+$string['summarydescription'] = 'This report provides an overview of the student\'s academic performance, including course completions, grades, and progress towards graduation.';
+$string['summarytitle'] = 'Academic Summary Report';
+$string['startdate'] = 'Start Date';
+$string['status'] = 'Status';
+$string['totalcourses'] = 'Total Courses';
+$string['username'] = 'User Name';
+$string['upcomingevents'] = 'Upcoming Events';
+$string['viewdetail'] = 'View Detail';
+$string['withoutstarting'] = 'Without Starting';
