@@ -9,6 +9,7 @@ on:
 env:
   PLUGIN_NAME: 'academic_summary'
   DEPLOY_TIME: ''
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   test:
