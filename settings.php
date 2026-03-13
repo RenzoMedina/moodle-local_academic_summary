@@ -33,7 +33,7 @@ if ($hassiteconfig) {
         // TO-DO: Define actual plugin settings page and add it to the tree - {@link https://docs.moodle.org/dev/Admin_settings}.
     }
     
-    $ADMIN->add('users', new admin_category('local_academic_summary_users', get_string('pluginname', 'local_academic_summary')));
+    $ADMIN->add('reports', new admin_category('local_academic_summary_users', get_string('pluginname', 'local_academic_summary')));
     $ADMIN->add('local_academic_summary_users', new admin_externalpage(
         'local_academic_summary',
         get_string('pluginname:link', 'local_academic_summary'),

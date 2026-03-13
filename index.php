@@ -39,16 +39,41 @@ use local_academic_summary\form\summary;
 
 $mform = new summary();
 
+$username = optional_param('username', '', PARAM_TEXT);
+$email = optional_param('email', '', PARAM_EMAIL);
+$listusers = [];
 if ($mform->is_cancelled()) {
-    redirect(new moodle_url('/admin/search.php#linkusers'));
+    redirect(new moodle_url('/admin/search.php#linkreports'));
 } else if ($data = $mform->get_data()) {
-    // Process form data if needed.
+    $username = $data->username;
+    $email = $data->email;
+}
+
+$sql = "SELECT u.id, u.firstname, u.lastname, u.email, u.lastaccess
+        FROM {user} u
+        WHERE u.firstname = :username OR u.email = :email";
+
+if (!empty($username) || !empty($email)) {
+    $user = $DB->get_record_sql($sql, ['username' => $username, 'email' => $email], IGNORE_MULTIPLE);
+    if ($user) {
+        $listusers[] = [
+            'id' => $user->id,
+            'fullname' => fullname($user),
+            'email' => $user->email,
+            'lastaccess' => userdate($user->lastaccess, get_string('strftimedatetime', 'langconfig')) ?: '',
+            'totalcourses'   => 0,
+            'averageprogress'=> 0,
+        ];
+    } else {
+        \core\notification::add(get_string('nouserfound', 'local_academic_summary'), \core\notification::WARNING);
+    }
 }
 
 echo $OUTPUT->header();
 $templatedata =[
-    'returnurl' => (new moodle_url('/admin/search.php#linkusers'))->out(),
+    'returnurl' => (new moodle_url('/admin/search.php#linkreports'))->out(),
     'formsummary' => $mform->render(),
+    'users' => $listusers ?? [],
 ];
 echo $OUTPUT->render_from_template('local_academic_summary/main', $templatedata);
 echo $OUTPUT->footer();

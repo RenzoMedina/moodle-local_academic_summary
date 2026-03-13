@@ -43,10 +43,10 @@ class summary extends \moodleform {
         // this form is simple, just to show how to use the template, you can add more fields as needed.
         $mform->addElement('text', 'username', get_string('username', 'local_academic_summary'), ['size' => 50]);
         $mform->setType('username', PARAM_TEXT);
-        $mform->addHelpButton('username',  'username',  'block_extsearch');
+        $mform->addHelpButton('username',  'username',  'local_academic_summary');
         $mform->addElement('text', 'email', get_string('email', 'local_academic_summary'), ['size' => 50]);
         $mform->setType('email', PARAM_EMAIL);
-        $mform->addHelpButton('email',  'email',  'block_extsearch');
+        $mform->addHelpButton('email',  'email',  'local_academic_summary');
         $mform->addElement('submit', 'submit', get_string('search', 'local_academic_summary'));
     }
 }
