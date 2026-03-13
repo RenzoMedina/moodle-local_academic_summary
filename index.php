@@ -25,7 +25,9 @@ use local_academic_summary\form\formsummary;
  */
 
 require_once(__DIR__ . '/../../config.php');
-
+require_once($CFG->dirroot . '/lib/completionlib.php');
+require_once($CFG->dirroot . '/calendar/lib.php');
+require_once($CFG->dirroot . '/lib/enrollib.php');
 require_login();
 require_capability('moodle/site:config', context_system::instance());
 require_capability('local/academic_summary:view', context_system::instance());
@@ -52,17 +54,73 @@ if ($mform->is_cancelled()) {
 $sql = "SELECT u.id, u.firstname, u.lastname, u.email, u.lastaccess
         FROM {user} u
         WHERE u.firstname = :username OR u.email = :email";
-
+    
+$coursedata = [];
+$timestart = time();
+$eventsdata = [];
+$timeend = $timestart + (7 * DAYSECS);
 if (!empty($username) || !empty($email)) {
     $user = $DB->get_record_sql($sql, ['username' => $username, 'email' => $email], IGNORE_MULTIPLE);
+    $course = enrol_get_users_courses($user->id, true,'id, fullname, startdate, enddate');
+    foreach ($course as $c) {
+        $completion = new completion_info($c);
+        $hascompletion = $completion->is_enabled();
+        $percentage = 0;
+        if ($hascompletion) {
+            $modinfo = get_fast_modinfo($c);
+            $total = 0;
+            $completed = 0;
+            foreach ($modinfo->cms as $cm) {
+                if ($cm->completion == COMPLETION_TRACKING_NONE) {
+                    continue;
+                }            
+                $total++;
+                $details = \core_completion\cm_completion_details::get_instance($cm, $user->id, true);
+
+                if ($details->is_overall_complete()) {
+                    $completed++;
+                }
+            }
+            $percentage = $total > 0 ? round(($completed / $total) * 100, 2) : 0;
+        }
+
+        $apitevents = \core_calendar\local\api::get_events(
+            null, null, $timestart, $timeend, null, null, 20, null, null, null, [$c->id]
+        );
+        foreach ($apitevents as $event) {
+            $eventsdata[] = [
+                'eventname' => format_string($event->get_course()->get('fullname')) . ' — ' . $event->get_name(),
+                'eventdate' => userdate(
+                    $event->get_times()->get_start_time()->getTimestamp(),
+                    get_string('strftimedatetime', 'langconfig')
+                ),
+            ];
+        }
+        $coursedata[] = [
+            'coursename' => format_string($c->fullname),
+            'startdate' => userdate($c->startdate, get_string('strftimedate', 'langconfig')),
+            'enddate' => !empty($c->enddate) ? userdate($c->enddate, get_string('strftimedate', 'langconfig')) : get_string('noenddate', 'local_academic_summary'),
+            'hascompletion' => $hascompletion,
+            'iscompleted' => $hascompletion ? ($percentage >= 100) : false,
+            'isinprogress' => $hascompletion ? ($percentage > 0 && $percentage < 100) : false,
+            'isnotstarted' => $hascompletion ? ($percentage <= 0) : false,
+            'isnotactive' => !$hascompletion,
+            'percentage' => $percentage,
+            'linkcourse' => (new moodle_url('/course/view.php', ['id' => $c->id]))->out(false),
+            
+        ];
+    }
     if ($user) {
         $listusers[] = [
-            'id' => $user->id,
+            'userid' => $user->id,
             'fullname' => fullname($user),
             'email' => $user->email,
             'lastaccess' => userdate($user->lastaccess, get_string('strftimedatetime', 'langconfig')) ?: '',
-            'totalcourses'   => 0,
-            'averageprogress'=> 0,
+            'totalcourses'   => count($coursedata),
+            'averageprogress'=> $coursedata ? array_sum(array_column($coursedata, 'percentage')) / count($coursedata) : 0,
+            'courses' => $coursedata ?? [],
+            'upcomingevents'=> !empty($eventsdata),
+            'events' => $eventsdata ?? [],
         ];
     } else {
         \core\notification::add(get_string('nouserfound', 'local_academic_summary'), \core\notification::WARNING);

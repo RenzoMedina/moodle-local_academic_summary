@@ -66,10 +66,10 @@
 		</tbody>
 	</table>
 </div>
-
 {{! Modal de detalle por usuario }}
+{{#users}}
 <div class="modal fade" id="modal-{{userid}}" tabindex="-1">
-	<div class="modal-dialog modal-lg">
+	<div class="modal-dialog modal-xl">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">{{fullname}}</h5>
@@ -79,7 +79,7 @@
 			</div>
 		<div class="modal-body">
 			{{! Lista de cursos }}
-			<table class="table table-md table-striped">
+			<table class="table table-md table-striped mb-0">
 				<thead>
 					<tr>
 						<th>{{#str}}coursename, local_academic_summary{{/str}}</th>
@@ -87,6 +87,7 @@
 						<th>{{#str}}enddate, local_academic_summary{{/str}}</th>
 						<th>{{#str}}progress, local_academic_summary{{/str}}</th>
 						<th>{{#str}}status, local_academic_summary{{/str}}</th>
+						<th>{{#str}}link, local_academic_summary{{/str}}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -111,7 +112,9 @@
 						{{#iscompleted}}<span class="badge badge-success">{{#str}}completed, local_academic_summary{{/str}}</span>{{/iscompleted}}
 						{{#isinprogress}}<span class="badge badge-warning">{{#str}}inprogress, local_academic_summary{{/str}}</span>{{/isinprogress}}
 						{{#isnotstarted}}<span class="badge badge-secondary">{{#str}}withoutstarting, local_academic_summary{{/str}}</span>{{/isnotstarted}}
+						{{#isnotactive}}<span class="badge badge-danger">{{#str}}notracking, local_academic_summary{{/str}}</span>{{/isnotactive}}
 						</td>
+						<td><a href={{linkcourse}} target="_blank" class="text-decoration-none"><i class="fa-solid fa-arrow-up-right-from-square ml-2"></i></a></td>
 						</tr>
 						{{/courses}}
 						{{^courses}}
@@ -121,6 +124,7 @@
 						{{/courses}}
 				</tbody>
 			</table>
+			<hr class="mt-0">
 			{{! Próximas entregas }}
 			<h6>{{#str}}upcomingevents, local_academic_summary{{/str}}</h6>
 				{{#upcomingevents}}
@@ -137,3 +141,4 @@
 		</div>
 	</div>
 </div>
+{{/users}}
