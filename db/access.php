@@ -25,12 +25,12 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = [
-	'local/academic_summary:view' => [
-		'captype' => 'read',
-		'contextlevel' => CONTEXT_SYSTEM,
-		'archetypes' => [
-			'manager' => CAP_ALLOW,
-		],
-		'clonepermissionsfrom' => 'moodle/my:manageblocks',
-	],
+    'local/academic_summary:view' => [
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+        ],
+        'clonepermissionsfrom' => 'moodle/my:manageblocks',
+    ],
 ];

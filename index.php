@@ -1,6 +1,4 @@
 <?php
-
-use local_academic_summary\form\formsummary;
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,11 +13,11 @@ use local_academic_summary\form\formsummary;
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
  * Main plugin file.
  *
  * @package     local_academic_summary
- * @category    local
  * @copyright   2026 Renzo Medina <medinast30@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -54,14 +52,13 @@ if ($mform->is_cancelled()) {
 $sql = "SELECT u.id, u.firstname, u.lastname, u.email, u.lastaccess
         FROM {user} u
         WHERE u.firstname = :username OR u.email = :email";
-    
 $coursedata = [];
 $timestart = time();
 $eventsdata = [];
 $timeend = $timestart + (7 * DAYSECS);
 if (!empty($username) || !empty($email)) {
     $user = $DB->get_record_sql($sql, ['username' => $username, 'email' => $email], IGNORE_MULTIPLE);
-    $course = enrol_get_users_courses($user->id, true,'id, fullname, startdate, enddate');
+    $course = enrol_get_users_courses ($user->id, true, 'id, fullname, startdate, enddate');
     foreach ($course as $c) {
         $completion = new completion_info($c);
         $hascompletion = $completion->is_enabled();
@@ -73,7 +70,7 @@ if (!empty($username) || !empty($email)) {
             foreach ($modinfo->cms as $cm) {
                 if ($cm->completion == COMPLETION_TRACKING_NONE) {
                     continue;
-                }            
+                }
                 $total++;
                 $details = \core_completion\cm_completion_details::get_instance($cm, $user->id, true);
 
@@ -99,7 +96,8 @@ if (!empty($username) || !empty($email)) {
         $coursedata[] = [
             'coursename' => format_string($c->fullname),
             'startdate' => userdate($c->startdate, get_string('strftimedate', 'langconfig')),
-            'enddate' => !empty($c->enddate) ? userdate($c->enddate, get_string('strftimedate', 'langconfig')) : get_string('noenddate', 'local_academic_summary'),
+            'enddate' => !empty($c->enddate) ? userdate($c->enddate,
+            get_string('strftimedate', 'langconfig')) : get_string('noenddate', 'local_academic_summary'),
             'hascompletion' => $hascompletion,
             'iscompleted' => $hascompletion ? ($percentage >= 100) : false,
             'isinprogress' => $hascompletion ? ($percentage > 0 && $percentage < 100) : false,
@@ -107,7 +105,6 @@ if (!empty($username) || !empty($email)) {
             'isnotactive' => !$hascompletion,
             'percentage' => $percentage,
             'linkcourse' => (new moodle_url('/course/view.php', ['id' => $c->id]))->out(false),
-            
         ];
     }
     if ($user) {
@@ -117,9 +114,9 @@ if (!empty($username) || !empty($email)) {
             'email' => $user->email,
             'lastaccess' => userdate($user->lastaccess, get_string('strftimedatetime', 'langconfig')) ?: '',
             'totalcourses'   => count($coursedata),
-            'averageprogress'=> $coursedata ? array_sum(array_column($coursedata, 'percentage')) / count($coursedata) : 0,
+            'averageprogress' => $coursedata ? array_sum(array_column($coursedata, 'percentage')) / count($coursedata) : 0,
             'courses' => $coursedata ?? [],
-            'upcomingevents'=> !empty($eventsdata),
+            'upcomingevents' => !empty($eventsdata),
             'events' => $eventsdata ?? [],
         ];
     } else {
@@ -128,7 +125,7 @@ if (!empty($username) || !empty($email)) {
 }
 
 echo $OUTPUT->header();
-$templatedata =[
+$templatedata = [
     'returnurl' => (new moodle_url('/admin/search.php#linkreports'))->out(),
     'formsummary' => $mform->render(),
     'users' => $listusers ?? [],
