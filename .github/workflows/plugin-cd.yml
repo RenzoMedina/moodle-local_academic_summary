@@ -77,7 +77,7 @@ jobs:
             --db-user=root \
             --db-pass=root \
             --db-name=moodle \
-            --moodle-branch=${{ matrix.moodle-branch }} \
+            --branch=${{ matrix.moodle-branch }} \
             --db=${{ matrix.database }}
         env:
           DB: ${{ matrix.database }}
