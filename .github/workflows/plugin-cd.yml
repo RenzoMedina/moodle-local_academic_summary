@@ -18,12 +18,14 @@ jobs:
       mariadb:
         image: mariadb:10.5
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_HOST_AUTH_METHOD: trust
+          MYSQL_USER: 'root'
+          MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+          MYSQL_CHARACTER_SET_SERVER: "utf8mb4"
+          MYSQL_COLLATION_SERVER: "utf8mb4_general_ci"
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot --silent"
+          --health-cmd="mysqladmin ping"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -31,12 +33,12 @@ jobs:
       postgres:
         image: postgres:14
         env:
-          POSTGRES_PASSWORD: root
+          POSTGRES_USER: 'postgres'
           POSTGRES_HOST_AUTH_METHOD: 'trust'
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U postgres -h 127.0.0.1"
+          --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -63,25 +65,18 @@ jobs:
           ini-values: max_input_vars=5000
           coverage: none
 
-      - name: Install moodle-plugin-ci
+      - name: Initialise moodle-plugin-ci
         run: |
           composer create-project -n --no-dev --prefer-dist \
             moodlehq/moodle-plugin-ci ci ^4
           echo "$(cd ci && pwd)/bin" >> $GITHUB_PATH
           echo "$(cd ci && pwd)/vendor/bin" >> $GITHUB_PATH
 
-      - name: Install Moodle
-        run: |
-          moodle-plugin-ci install \
-            --plugin ./plugin \
-            --db-host=127.0.0.1 \
-            --db-user=root \
-            --db-pass=root \
-            --db-name=moodle \
-            --branch=${{ matrix.moodle-branch }} \
-            --db-type=${{ matrix.database }}
+      - name: Install moodle-plugin-ci
+        run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
         env:
           DB: ${{ matrix.database }}
+          MOODLE_BRANCH: ${{ matrix.moodle-branch }}
           
       - name: PHP Lint
         if: ${{ !cancelled() }}
