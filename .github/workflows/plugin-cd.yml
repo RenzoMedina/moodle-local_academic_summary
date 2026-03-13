@@ -25,7 +25,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready -U moodle -d moodle
+          --health-cmd pg_isready -U postgres -d moodle
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -73,7 +73,7 @@ jobs:
             --plugin ./plugin \
             --db-host=127.0.0.1 \
             --db-user=postgres \
-            --db-pass='' \
+            --db-pass=postgres \
             --db-name=moodle \
             --moodle-branch=${{ matrix.moodle-branch }} \
             --db=${{ matrix.database }}
