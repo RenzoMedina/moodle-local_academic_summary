@@ -19,7 +19,6 @@ jobs:
         image: mariadb:10.5
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: moodle
           MYSQL_HOST_AUTH_METHOD: trust
         ports:
           - 3306:3306
