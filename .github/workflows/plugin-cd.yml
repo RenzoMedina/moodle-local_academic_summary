@@ -78,10 +78,10 @@ jobs:
             --db-pass=root \
             --db-name=moodle \
             --branch=${{ matrix.moodle-branch }} \
-            --db=${{ matrix.database }}
+            --db-type=${{ matrix.database }}
         env:
           DB: ${{ matrix.database }}
-
+          
       - name: PHP Lint
         run: moodle-plugin-ci phplint
 
