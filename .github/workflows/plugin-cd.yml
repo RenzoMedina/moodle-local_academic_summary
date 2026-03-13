@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  PLUGIN_NAME: 'academic_summary'
+  PLUGIN_NAME: 'local_academic_summary'
   DEPLOY_TIME: ''
 
 jobs:
