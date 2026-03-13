@@ -15,17 +15,16 @@ jobs:
     runs-on: ubuntu-latest
     
     services:
-      postgres:
-        image: postgres:15
+      mariadb:
+        image: mariadb:10.5
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: moodle
-          POSTGRES_HOST_AUTH_METHOD: trust
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: moodle
+          MYSQL_HOST_AUTH_METHOD: trust
         ports:
-          - 5432:5432
+          - 3306:3306
         options: >-
-          --health-cmd pg_isready -U postgres -d moodle
+          --health-cmd mysqladmin ping -h localhost
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -36,16 +35,19 @@ jobs:
           include:
             - php: '8.1'
               moodle-branch: 'MOODLE_401_STABLE'
-              database: pgsql
+              database: mariadb
             - php: '8.2'
               moodle-branch: 'MOODLE_403_STABLE'
-              database: pgsql
+              database: mariadb
             - php: '8.3'
               moodle-branch: 'MOODLE_404_STABLE'
-              database: pgsql
+              database: mariadb
             - php: '8.4'
               moodle-branch: 'MOODLE_405_STABLE'
-              database: pgsql
+              database: mariadb
+            - php: '8.4'
+              moodle-branch: 'MOODLE_500_STABLE'
+              database: mariadb
 
     steps:
       - name: Checkout plugin
@@ -72,8 +74,8 @@ jobs:
           moodle-plugin-ci install \
             --plugin ./plugin \
             --db-host=127.0.0.1 \
-            --db-user=postgres \
-            --db-pass=postgres \
+            --db-user=root \
+            --db-pass=root \
             --db-name=moodle \
             --moodle-branch=${{ matrix.moodle-branch }} \
             --db=${{ matrix.database }}
