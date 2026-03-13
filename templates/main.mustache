@@ -13,7 +13,47 @@
 
 	You should have received a copy of the GNU General Public License
 	along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 }}
+{{!
+    @template local_academic_summary/main
+    Template purpose and description.
+
+    Example context (json):
+    {
+        "returnurl": "http://example.com",
+        "users": [
+            {
+                "userid": 1,
+                "fullname": "John Doe",
+                "lastaccess": "2026-03-13",
+                "totalcourses": 5,
+                "averageprogress": 80,
+                "iscourses": true,
+                "courses": [
+                    {
+                        "coursename": "Math 101",
+                        "startdate": "2026-01-01",
+                        "enddate": "2026-03-01",
+                        "percentage": 50,
+                        "hascompletion": true,
+                        "iscompleted": false,
+                        "isinprogress": true,
+                        "isnotstarted": false,
+                        "isnotactive": false,
+                        "linkcourse": "http://example.com/course/view.php?id=2"
+                    }
+                ]
+            }
+        ],
+        "upcomingevents": {
+            "events": [
+                {"eventname": "Exam", "eventdate": "2026-03-20"}
+            ]
+        }
+    }
+}}
+
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-12">
@@ -66,6 +106,7 @@
 		</tbody>
 	</table>
 </div>
+</div>
 {{! Modal de detalle por usuario }}
 {{#users}}
 <div class="modal fade" id="modal-{{userid}}" tabindex="-1">
@@ -114,7 +155,7 @@
 						{{#isnotstarted}}<span class="badge badge-secondary">{{#str}}withoutstarting, local_academic_summary{{/str}}</span>{{/isnotstarted}}
 						{{#isnotactive}}<span class="badge badge-danger">{{#str}}notracking, local_academic_summary{{/str}}</span>{{/isnotactive}}
 						</td>
-						<td><a href={{linkcourse}} target="_blank" class="text-decoration-none"><i class="fa-solid fa-arrow-up-right-from-square ml-2"></i></a></td>
+						<td><a href="{{linkcourse}}"" target="_blank" class="text-decoration-none"><i class="fa-solid fa-arrow-up-right-from-square ml-2"></i></a></td>
 						</tr>
 						{{/courses}}
 						{{^courses}}
