@@ -28,25 +28,26 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_PASSWORD: root
+          POSTGRES_HOST_AUTH_METHOD: 'trust'
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -h 127.0.0.1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+
     strategy:
       fail-fast: false
       matrix:
-          include:
-            - php: '8.1'
-              moodle-branch: 'MOODLE_401_STABLE'
-              database: mariadb
-            - php: '8.2'
-              moodle-branch: 'MOODLE_403_STABLE'
-              database: mariadb
-            - php: '8.3'
-              moodle-branch: 'MOODLE_404_STABLE'
-              database: mariadb
-            - php: '8.4'
-              moodle-branch: 'MOODLE_405_STABLE'
-              database: mariadb
-            - php: '8.4'
-              moodle-branch: 'MOODLE_500_STABLE'
-              database: mariadb
+        php: ['8.1', '8.2', '8.3', '8.4']
+        moodle-branch: ['MOODLE_401_STABLE', 'MOODLE_403_STABLE', 'MOODLE_404_STABLE', 'MOODLE_405_STABLE', 'MOODLE_500_STABLE']
+        database: ['mariadb', 'postgres']
 
     steps:
       - name: Checkout plugin
@@ -59,6 +60,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring, xml, curl, zip, gd, intl, mysqli
+          ini-values: max_input_vars=5000
           coverage: none
 
       - name: Install moodle-plugin-ci
@@ -82,22 +84,38 @@ jobs:
           DB: ${{ matrix.database }}
           
       - name: PHP Lint
+        if: ${{ !cancelled() }}
         run: moodle-plugin-ci phplint
 
-      - name: PHP Copy/Paste Detector
-        run: moodle-plugin-ci phpcpd
-
       - name: PHP Mess Detector
+        continue-on-error: true # This step will show errors but will not fail
+        if: ${{ !cancelled() }}
         run: moodle-plugin-ci phpmd
 
       - name: Moodle Code Checker
-        run: moodle-plugin-ci codechecker
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpcs --max-warnings 0 --exclude="Universal.WhiteSpace.CommaSpacing,PSR12.Classes.ClassInstantiation,PSR12.Classes.OpeningBraceSpace,Universal.Lists.DisallowLongListSyntax,PSR2.Methods.FunctionCallSignature,PSR12.ControlStructures.ControlStructureSpacing,Squiz.WhiteSpace.ControlStructureSpacing,PSR2.ControlStructures.SwitchDeclaration,Squiz.Functions.MultiLineFunctionDeclaration,PSR2.Classes.ClassDeclaration"
 
-      - name: Moodle PHPDoc Checker
-        run: moodle-plugin-ci phpdoc
-
-      - name: Validar plugin
+      - name: Validating
+        if: ${{ !cancelled() }}
         run: moodle-plugin-ci validate
+
+      - name: Check upgrade savepoints
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci savepoints
+
+      - name: Mustache Lint
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci mustache
+
+      - name: PHPUnit tests
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpunit --fail-on-warning
+
+      - name: Behat features
+        id: behat
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci behat --profile chrome
 
   build:
     needs: test

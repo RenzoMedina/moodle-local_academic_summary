@@ -58,7 +58,7 @@ $eventsdata = [];
 $timeend = $timestart + (7 * DAYSECS);
 if (!empty($username) || !empty($email)) {
     $user = $DB->get_record_sql($sql, ['username' => $username, 'email' => $email], IGNORE_MULTIPLE);
-    $course = enrol_get_users_courses ($user->id, true, 'id, fullname, startdate, enddate');
+    $course = enrol_get_users_courses($user->id, true, 'id, fullname, startdate, enddate');
     foreach ($course as $c) {
         $completion = new completion_info($c);
         $hascompletion = $completion->is_enabled();
